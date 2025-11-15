@@ -1,8 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "My Zuplo API",
-    "version": "1.0.0"
+    "title": "Leaderboard API Gateway",
+    "version": "1.0.0",
+    "description": "A secure API gateway that proxies and sanitizes casino leaderboard data, exposing only usernames and wager amounts while protecting all other sensitive information."
   },
   "paths": {
     "/leaderboard": {
@@ -11,7 +12,49 @@
       },
       "get": {
         "summary": "Retrieve sanitized leaderboard data",
-        "description": "Sanitizes data",
+        "description": "Fetches leaderboard data from the configured casino API and returns only sanitized player information (username and wager amounts). All other sensitive data is automatically removed. Requires API key authentication.",
+        "tags": ["Leaderboard"],
+        "responses": {
+          "200": {
+            "description": "Sanitized leaderboard data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "username": {
+                        "type": "string",
+                        "description": "Player username"
+                      },
+                      "wager": {
+                        "type": "number",
+                        "description": "Wager amount"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "username": "Player1",
+                    "wager": 1200
+                  },
+                  {
+                    "username": "Player2",
+                    "wager": 950
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key"
+          },
+          "500": {
+            "description": "Internal server error - Issue connecting to casino API or processing response"
+          }
+        },
         "x-zuplo-route": {
           "corsPolicy": "anything-goes",
           "handler": {
