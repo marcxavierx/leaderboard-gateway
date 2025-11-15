@@ -1,0 +1,218 @@
+# Setup Guide
+
+This guide will walk you through deploying your own secure leaderboard gateway.
+
+## Why This Gateway?
+
+This gateway protects your casino API by:
+- Keeping your casino API URL completely private
+- Only exposing usernames and wager amounts (everything else is blocked)
+- Requiring an API key that only you control
+- Allowing you to revoke access anytime
+
+**You stay in complete control** - the gateway runs under your own Zuplo account.
+
+---
+
+## Step 1: Deploy to Zuplo
+
+### Option A: Import from GitHub (Recommended)
+
+1. Go to [portal.zuplo.com](https://portal.zuplo.com) and login/signup
+2. Click **"New Project"**
+3. Select **"Import from GitHub"**
+4. Paste your repository URL
+5. Click **"Import"**
+6. Click **"Deploy"**
+
+Your gateway will be live at: `https://[your-project-name].zuplo.app`
+
+### Option B: Upload Directly
+
+1. Download this project as a ZIP file
+2. Go to [portal.zuplo.com](https://portal.zuplo.com) and login/signup
+3. Click **"New Project"**
+4. Select **"Upload ZIP"**
+5. Upload the ZIP file
+6. Click **"Deploy"**
+
+---
+
+## Step 2: Configure Your Casino API
+
+1. In your Zuplo project, click **"Settings"** in the left sidebar
+2. Click **"Environment Variables"**
+3. Click **"Add Variable"**
+4. Enter:
+   - **Name:** `CASINO_URL`
+   - **Value:** Your casino API leaderboard endpoint
+
+   Example: `https://your-casino-api.com/api/v1/leaderboard`
+
+5. Click **"Save"**
+
+> 🔒 **This URL stays private.** Only you can see it in your environment variables. The leaderboard developer will never see this.
+
+---
+
+## Step 3: Create an API Key
+
+1. Click **"Services"** in the left sidebar
+2. Click **"API Key Manager"**
+3. Click **"Create Consumer"**
+4. Enter:
+   - **Name:** `Leaderboard Website` (or any name you want)
+   - Leave other settings as default
+5. Click **"Create"**
+6. **Copy the API key** that appears - you'll need to give this to your leaderboard developer
+
+> 💡 **Tip:** You can create multiple API keys if needed, and delete them individually to revoke access.
+
+---
+
+## Step 4: Test Your Gateway
+
+### Test in Browser (Quick Check)
+
+Copy your API key and try this URL in your browser:
+
+```
+https://[your-project-name].zuplo.app/leaderboard?api-key=YOUR_API_KEY_HERE
+```
+
+You should see a JSON response with only usernames and wagers.
+
+### Test with curl (Advanced)
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY_HERE" \
+  https://[your-project-name].zuplo.app/leaderboard
+```
+
+Expected response:
+```json
+[
+  {
+    "username": "Player1",
+    "wager": 1200
+  },
+  {
+    "username": "Player2",
+    "wager": 950
+  }
+]
+```
+
+### Verify Protection Works
+
+Try accessing without an API key:
+```
+https://[your-project-name].zuplo.app/leaderboard
+```
+
+You should get an error - this confirms your gateway is protected.
+
+---
+
+## Step 5: Give Access to Your Leaderboard Developer
+
+Share with your developer:
+
+1. **Gateway URL:** `https://[your-project-name].zuplo.app/leaderboard`
+2. **API Key:** The key you created in Step 3
+
+**What you're NOT sharing:**
+- ❌ Your casino API URL (stays in your environment variables)
+- ❌ Your casino API credentials
+- ❌ Your Zuplo account access
+- ❌ Any sensitive data
+
+**What they'll receive:**
+- ✅ Only usernames and wager amounts
+- ✅ Nothing else
+
+---
+
+## Security Checklist
+
+Before going live, verify:
+
+- ✅ Gateway is deployed under **your** Zuplo account
+- ✅ `CASINO_URL` is set in environment variables
+- ✅ Test request returns only username and wager fields
+- ✅ Request without API key is rejected
+- ✅ API key is copied and ready to share
+
+---
+
+## Managing Access
+
+### View Request Logs
+1. Go to your Zuplo dashboard
+2. Click **"Analytics"**
+3. See all requests, response times, and any errors
+
+### Revoke Access
+If you need to revoke access to your leaderboard:
+
+1. Go to **Services** → **API Key Manager**
+2. Find the consumer (e.g., "Leaderboard Website")
+3. Click **"Delete"**
+
+The leaderboard will immediately stop working.
+
+### Create New API Key
+1. Follow Step 3 again to create a new consumer
+2. Copy the new API key
+3. Share it with your developer to restore access
+
+### Update Casino API URL
+If your casino API endpoint changes:
+
+1. Go to **Settings** → **Environment Variables**
+2. Click on `CASINO_URL`
+3. Update the value
+4. Click **"Save"**
+
+Changes take effect immediately - no need to redeploy.
+
+---
+
+## Troubleshooting
+
+### "Unauthorized" Error
+**Problem:** Requests return 401 Unauthorized
+
+**Solution:**
+- Verify the API key is correct
+- Make sure it's included in the request header: `Authorization: Bearer YOUR_KEY`
+
+### "Internal Server Error"
+**Problem:** Requests return 500 error
+
+**Solution:**
+- Check that `CASINO_URL` is set correctly in environment variables
+- Verify your casino API is responding (test it directly)
+- Check Zuplo logs in Analytics section for details
+
+### Empty Response
+**Problem:** Returns `[]` even though leaderboard has data
+
+**Solution:**
+- Your casino API might use different field names
+- The gateway looks for: `username/user/player/name` and `wager/bet/amount/value`
+- Contact your developer to adjust the field patterns if needed
+
+---
+
+## What Happens Next?
+
+Once setup is complete:
+
+1. Your leaderboard developer integrates the gateway URL and API key
+2. Their website fetches data from **your gateway** (not your casino API)
+3. The gateway automatically sanitizes all responses
+4. Only usernames and wagers are shown on the leaderboard
+5. You can monitor all activity in your Zuplo dashboard
+
+Your casino API stays completely private and protected.
