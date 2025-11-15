@@ -24,7 +24,7 @@ const config: ZudokuConfig = {
       type: "category",
       label: "Documentation",
       icon: "book",
-      items: ["overview", "setup"],
+      items: ["introduction", "gateway"],
     },
     {
       type: "link",
@@ -33,7 +33,7 @@ const config: ZudokuConfig = {
       icon: "code",
     },
   ],
-  redirects: [{ from: "/", to: "/api" }],
+  redirects: [{ from: "/", to: "/introduction" }],
   apis: [
     {
       type: "file",
