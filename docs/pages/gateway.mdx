@@ -53,12 +53,13 @@ The gateway automatically sanitizes all responses from your casino API:
 ### How It Works
 
 1. Client requests data from the gateway (with API key)
-2. Gateway authenticates the request
-3. Gateway fetches data from your casino API (using your private credentials)
-4. Gateway sanitizes the response, keeping only username and wager fields
-5. Client receives only safe, public data
+2. Gateway authenticates the request using API key validation
+3. Gateway forwards the request to your casino API with session cookie authentication
+4. Gateway receives the full response from your casino API
+5. Gateway sanitizes the response, keeping only username and wager fields
+6. Client receives only safe, public data
 
-Your casino API URL and credentials remain private in your environment variables.
+Your casino API URL, session cookie, and all sensitive data remain private in your environment variables.
 
 ## Configuration
 
@@ -67,17 +68,18 @@ Your casino API URL and credentials remain private in your environment variables
 Set the following in your Zuplo environment:
 
 - `CASINO_URL` - Your casino API leaderboard endpoint URL
+- `CASINO_COOKIE` - Your casino API session cookie for authentication (e.g., `session_id=abc123; token=xyz789`)
 
 ### API Keys
 
-Create and manage API keys in the Zuplo dashboard under Services ’ API Key Manager.
+Create and manage API keys in the Zuplo dashboard under Services ï¿½ API Key Manager.
 
 ## Intelligent Field Mapping
 
 The gateway uses pattern matching to work with different API response structures:
 
 - **Username fields:** Matches `username`, `user`, `player`, or `name`
-- **Wager fields:** Matches `wager`, `bet`, `amount`, or `value`
+- **Wager fields:** Matches `wager`, `wager_total`, `value`, `amount`, or `bet` (supports both primitive values and nested objects)
 
 This ensures compatibility even if your casino API structure changes.
 

@@ -45,17 +45,27 @@ Your gateway will be live at: `https://[your-project-name].zuplo.app`
 
 ## Step 2: Configure Your Casino API
 
+You need to set up two environment variables for authentication:
+
 1. In your Zuplo project, click **"Settings"** in the left sidebar
 2. Click **"Environment Variables"**
-3. Click **"Add Variable"**
-4. Enter:
+3. Add the first variable:
+   - Click **"Add Variable"**
    - **Name:** `CASINO_URL`
    - **Value:** Your casino API leaderboard endpoint
 
    Example: `https://your-casino-api.com/api/v1/leaderboard`
+
+4. Add the second variable:
+   - Click **"Add Variable"**
+   - **Name:** `CASINO_COOKIE`
+   - **Value:** Your casino API session cookie for authentication
+
+   Example: `session_id=abc123xyz; token=def456uvw`
+
 5. Click **"Save"**
 
-> 🔒 **This URL stays private.** Only you can see it in your environment variables. The leaderboard developer will never see this.
+> 🔒 **Both values stay private.** Only you can see them in your environment variables. The leaderboard developer will never see your casino API credentials or authentication tokens.
 
 ---
 
@@ -143,6 +153,7 @@ Before going live, verify:
 
 - ✅ Gateway is deployed under **your** Zuplo account
 - ✅ `CASINO_URL` is set in environment variables
+- ✅ `CASINO_COOKIE` is set in environment variables
 - ✅ Test request returns only username and wager fields
 - ✅ Request without API key is rejected
 - ✅ API key is copied and ready to share
@@ -170,15 +181,17 @@ The leaderboard will immediately stop working.
 2. Copy the new API key
 3. Share it with your developer to restore access
 
-### Update Casino API URL
-If your casino API endpoint changes:
+### Update Casino API Configuration
+If your casino API endpoint or authentication changes:
 
 1. Go to **Settings** → **Environment Variables**
-2. Click on `CASINO_URL`
+2. Click on `CASINO_URL` or `CASINO_COOKIE` to update
 3. Update the value
 4. Click **"Save"**
 
 Changes take effect immediately - no need to redeploy.
+
+> 💡 **Note:** If your casino session cookie expires, you'll need to update the `CASINO_COOKIE` environment variable with a fresh session token.
 
 ---
 
@@ -196,8 +209,9 @@ Changes take effect immediately - no need to redeploy.
 
 **Solution:**
 - Check that `CASINO_URL` is set correctly in environment variables
-- Verify your casino API is responding (test it directly)
-- Check Zuplo logs in Analytics section for details
+- Verify that `CASINO_COOKIE` is set and hasn't expired
+- Test your casino API directly to confirm it's responding
+- Check Zuplo logs in Analytics section for detailed error messages
 
 ### Empty Response
 **Problem:** Returns `[]` even though leaderboard has data
