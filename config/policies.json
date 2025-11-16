@@ -17,8 +17,8 @@
       "name": "inject-casino-token",
       "policyType": "add-request-headers",
       "handler": {
+        "export": "default",
         "module": "$import(@zuplo/runtime)",
-        "export": "AddRequestHeadersPolicy",
         "options": {
           "headers": {
             "cookie": "${env.CASINO_COOKIE}"
