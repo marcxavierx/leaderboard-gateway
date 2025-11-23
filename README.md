@@ -75,13 +75,13 @@ All sensitive fields are automatically removed before any data leaves your gatew
 
 Your gateway will be deployed at: `https://your-project-name.zuplo.app`
 
-### Step 2: Configure Your Casino API URL
+### Step 2: Configure Your Casino Token
 
 1. In your Zuplo dashboard, go to **"Settings"** → **"Environment Variables"**
 2. Click **"Add Variable"**
 3. Set:
-   - **Name:** `CASINO_URL`
-   - **Value:** Your casino API leaderboard endpoint (e.g., `https://your-casino-api.com/api/leaderboard`)
+   - **Name:** `CASINO_COOKIE`
+   - **Value:** Your casino account token, e.g. thrill.com cookie
 4. Click **"Save"**
 
 > ⚠️ **Important:** This URL stays private in your Zuplo environment. Nobody else can see it.
